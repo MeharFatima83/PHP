@@ -11,7 +11,7 @@ include 'connection.php';
     </p>
 
     <p style="margin:5px 0 0 0; font-size:14px;">
-        contact fro any queries
+        contact for any queries
     </p>
 
 </div>
