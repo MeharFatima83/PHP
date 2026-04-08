@@ -34,7 +34,8 @@ if(isset($_POST['setpin'])){
         echo "<script>alert('PIN does not match');</script>";
     }
     else{
-        $update = "UPDATE emp SET pin='$pin' WHERE id='$accountNo'";
+          $hashedPin = password_hash($pin, PASSWORD_DEFAULT);
+        $update = "UPDATE emp SET pin='$hashedPin' WHERE id='$accountNo'";
 
         if(mysqli_query($connection, $update)){
             echo "<script>alert('PIN Set Successfully'); window.location.href='index.php';</script>";

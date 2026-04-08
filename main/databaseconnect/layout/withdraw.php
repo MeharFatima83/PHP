@@ -11,7 +11,7 @@ include 'header.php';
 
 $accountNo = $_SESSION['accountNo'];
 
-// ✅ Account Name fetch from emp table
+// Account Name fetch from emp table
 $sqlUser = "SELECT name FROM emp WHERE id='$accountNo'";
 $resUser = mysqli_query($connection, $sqlUser);
 
@@ -100,13 +100,13 @@ if(isset($_POST['withdraw'])){
     }
     else{
         $newBalance = $balance - $amount;
-        $txnId = uniqid("txn_", true);
+        $transId = 'debit'.rand(111,999);
 
         // ✅ Insert debit entry
      $insert = "INSERT INTO usertransaction 
       (userId, availableBalance, transactionId, transactionDate, transactionType, transactionAmount) 
       VALUES 
-      ('$accountNo','$newBalance','$txnId',NOW(),'debit','$amount')";
+      ('$accountNo','$newBalance','$transId',NOW(),'debit','$amount')";
 
         if(mysqli_query($connection, $insert)){
             echo "<script>alert('Withdraw Successful'); window.location.href='user.php';</script>";

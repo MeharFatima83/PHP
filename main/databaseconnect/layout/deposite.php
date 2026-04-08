@@ -62,12 +62,12 @@ if(isset($_POST['deposit'])){
     else {
          //unique transaction id generate karne ke liye uniqid function use kiya hai, jisse har transaction ka alag id milega. isliye prefix "txn_" diya hai taaki easily identify ho sake ki ye transaction id hai.kyuki duplicate transaction id se database me confusion ho sakta hai, isliye uniqid use kiya hai. aur true parameter dene se aur bhi unique id generate hota hai, jisme microseconds bhi include hota hai, isse chances of duplicate id aur bhi kam ho jata hai.
         $newBalance = $balance + $amount;
-         $txnId = uniqid("txn_", true);
+         $transId='credit'.rand(111,999);
 
         //  Insert CREDIT
         $insert = "INSERT INTO usertransaction 
         (userId, availableBalance, transactionId, transactionDate, transactionType, transactionAmount) 
-        VALUES ('$accountNo','$newBalance','$txnId',NOW(),'credit','$amount')";
+        VALUES ('$accountNo','$newBalance','$transId',NOW(),'credit','$amount')";
 
         if(mysqli_query($connection, $insert)){
             echo "<script>alert('Deposit Successful'); window.location.href='user.php';</script>";
