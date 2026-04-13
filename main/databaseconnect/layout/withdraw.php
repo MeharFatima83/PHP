@@ -11,7 +11,7 @@ include 'header.php';
 
 $accountNo = $_SESSION['accountNo'];
 
-// Account Name fetch from emp table
+//  Account Name fetch
 $sqlUser = "SELECT name FROM emp WHERE id='$accountNo'";
 $resUser = mysqli_query($connection, $sqlUser);
 
@@ -20,6 +20,82 @@ if($resUser && mysqli_num_rows($resUser) > 0){
     $accountName = $userData['name'];
 } else {
     $accountName = "User";
+}
+
+//  FORM PROCESS
+if(isset($_POST['withdraw'])){
+
+    $amount = $_POST['amount'];
+    $pin = $_POST['pin'];
+
+    //  PIN fetch
+    $checkPin = "SELECT pin FROM emp WHERE id='$accountNo'";
+    $resPin = mysqli_query($connection, $checkPin);
+    $rowPin = mysqli_fetch_assoc($resPin);
+
+    //  PIN not set
+    if(empty($rowPin['pin'])){
+        $_SESSION['error'] = "Please set your PIN first";
+        header("Location: setpin.php");
+        exit();
+    }
+
+    //  Wrong PIN (HASH VERIFY)
+    if(!password_verify($pin, $rowPin['pin'])){
+        $_SESSION['error'] = "Wrong PIN";
+        header("Location: withdraw.php");
+        exit();
+    }
+
+    // Invalid amount
+    if(!is_numeric($amount) || $amount <= 0){
+        $_SESSION['error'] = "Enter valid amount";
+        header("Location: withdraw.php");
+        exit();
+    }
+
+    //  Latest balance fetch
+    $sql = "SELECT * FROM usertransaction 
+            WHERE userId='$accountNo' 
+            ORDER BY transactionDate DESC 
+            LIMIT 1";
+
+    $result = mysqli_query($connection, $sql);
+    $data = mysqli_fetch_assoc($result);
+
+    if(!$data){
+        $_SESSION['error'] = "No transaction found";
+        header("Location: withdraw.php");
+        exit();
+    }
+
+    $balance = $data['availableBalance'];
+
+    //  Insufficient balance
+    if($amount > $balance){
+        $_SESSION['error'] = "Insufficient Balance";
+        header("Location: withdraw.php");
+        exit();
+    }
+
+    //  Withdraw process
+    $newBalance = $balance - $amount;
+    $transId = 'debit'.rand(111,999);
+
+    $insert = "INSERT INTO usertransaction 
+    (userId, availableBalance, transactionId, transactionDate, transactionType, transactionAmount) 
+    VALUES 
+    ('$accountNo','$newBalance','$transId',NOW(),'debit','$amount')";
+
+    if(mysqli_query($connection, $insert)){
+        $_SESSION['success'] = "Withdraw Successful";
+        header("Location: user.php");
+        exit();
+    } else {
+        $_SESSION['error'] = "Transaction Failed";
+        header("Location: withdraw.php");
+        exit();
+    }
 }
 ?>
 
@@ -41,6 +117,37 @@ box-shadow:0 0 15px rgba(0,0,0,0.2);
 ">
 
 <h2 style="text-align:center;margin-bottom:20px;">Withdraw Money</h2>
+
+<!-- ✅ ERROR MESSAGE -->
+<?php
+if(isset($_SESSION['error'])){
+    echo "<div style='
+        background:#ff4d4d;
+        color:white;
+        padding:10px;
+        text-align:center;
+        margin-bottom:10px;
+        border-radius:5px;
+    '>
+        ".$_SESSION['error']."
+    </div>";
+    unset($_SESSION['error']);
+}
+
+if(isset($_SESSION['success'])){
+    echo "<div style='
+        background:#28a745;
+        color:white;
+        padding:10px;
+        text-align:center;
+        margin-bottom:10px;
+        border-radius:5px;
+    '>
+        ".$_SESSION['success']."
+    </div>";
+    unset($_SESSION['success']);
+}
+?>
 
 <form method="POST">
 
@@ -65,54 +172,14 @@ Withdraw
 
 </form>
 
+<!-- 🔐 Reset PIN -->
+<p style="text-align:center;margin-top:10px;">
+    <a href="setpin.php" style="color:#007bff;text-decoration:none;">
+        Forgot PIN? Reset here
+    </a>
+</p>
+
 </div>
 
 </body>
 </html>
-
-<?php
-if(isset($_POST['withdraw'])){
-
-    $amount = $_POST['amount'];
-
-    // ✅ Latest balance fetch
-    $sql = "SELECT * FROM usertransaction 
-            WHERE userId='$accountNo' 
-            ORDER BY transactionDate DESC 
-            LIMIT 1";
-
-    $result = mysqli_query($connection, $sql);
-    $data = mysqli_fetch_assoc($result);
-
-    if(!$data){
-        echo "<script>alert('No transaction found');</script>";
-        exit();
-    }
-
-    $balance = $data['availableBalance'];
-
-    // ✅ Validation
-    if($amount <= 0){
-        echo "<script>alert('Invalid Amount');</script>";
-    }
-    elseif($amount > $balance){
-        echo "<script>alert('Insufficient Balance');</script>";
-    }
-    else{
-        $newBalance = $balance - $amount;
-        $transId = 'debit'.rand(111,999);
-
-        // ✅ Insert debit entry
-     $insert = "INSERT INTO usertransaction 
-      (userId, availableBalance, transactionId, transactionDate, transactionType, transactionAmount) 
-      VALUES 
-      ('$accountNo','$newBalance','$transId',NOW(),'debit','$amount')";
-
-        if(mysqli_query($connection, $insert)){
-            echo "<script>alert('Withdraw Successful'); window.location.href='user.php';</script>";
-        } else {
-            echo "<script>alert('Transaction Failed');</script>";
-        }
-    }
-}
-?>

@@ -24,7 +24,7 @@
        Show Transactions
     </a>
 
-    <a href="admin_management.php" 
+    <a href="adminManagement.php" 
        style="display:block; color:white; padding:15px; text-decoration:none; border-bottom:1px solid #34495e;">
        Admin Management
     </a>
