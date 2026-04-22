@@ -30,10 +30,16 @@ include 'database.php';
 include 'student.php';
 $db=new Database();
 $user=new User($db->conn());
+
 if($_SERVER['REQUEST_METHOD']=="POST"){
-    $user->name=$_POST['name'];
-    $user->email=$_POST['email'];
-    $user->mobile=$_POST['mobile'];
-    $user->create();
+    $user->name = $_POST['name'];
+    $user->email = $_POST['email'];
+    $user->mobile = $_POST['mobile'];
+
+    if($user->create()){
+        echo "Data inserted successfully ";
+    } else {
+        echo "Insert failed ";
+    }
 }
 ?>
