@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="name" >
+     <button type="submit">Submit</button>
+    <script>
+        document.getElementById("name").addEventListener("focus",function(){
+            this.style.width="200px";
+            this.style.fontSize="30px";
+            this.style.borderColor='#007bff';
+        })
+        document.getElementById("name").addEventListener("blur",function(){
+           
+            this.style.background='pink';
+   
+            this.style.width = "150px";   // default size
+            this.style.fontSize = "16px"; // default font
+            this.style.borderColor = "";  // reset
+
+        })
+        // function previous(){
+        //     document.getElementById('name').style.background='green';
+        // }
+
+
+    </script>
+</body>
+</html>
+
+
+        <form id="myForm">
+    <input type="text" placeholder="Enter name">
+   
+</form>
+
+<script>
+document.getElementById("myForm").addEventListener("submit", function(e){
+    e.preventDefault(); // page reload rokne ke liye
+    alert("Form submitted!");
+});
+</script>

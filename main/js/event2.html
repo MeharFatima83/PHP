@@ -1,0 +1,23 @@
+<html>
+<p>one</p>
+<p>two</p>
+<p>three</p>
+<p>four</p>
+<p>five</p>
+<p>six</p>
+<button id="btn" onclick="change()">Change Colors</button>
+</html>
+<script>
+function change(){
+let para = document.getElementsByTagName("p");
+for(let i=0;i<para.length;i++){
+    if(i%2==0){
+        para[i].style.backgroundColor = "red";
+    }
+    else{
+        para[i].style.backgroundColor = "green";
+    }
+}
+}
+
+</script>

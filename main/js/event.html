@@ -1,0 +1,26 @@
+<html>
+    <input type="text" onkeyup="d(this)">
+
+    <div style="height: 200px;width: 200px; color: red; border: 1px solid black;">
+        this is div
+    </div>
+
+    <button onclick="setDiv()">click me</button>
+</html>
+
+<script>
+  function d(eve){
+    let div = document.getElementsByTagName("div");
+
+    div[0].style.backgroundColor = eve.value;
+    div[0].style.color = eve.value;
+  }
+
+  function setDiv(){
+    let div1 = document.getElementsByTagName("div")[0];
+
+    div1.innerHTML = "this is div1";
+    div1.style.backgroundColor = "lightgray";
+    div1.style.color = "black";
+  }
+</script>

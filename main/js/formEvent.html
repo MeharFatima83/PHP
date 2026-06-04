@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="mymessage"></div>
+    <input type="text" id="name" oninput="change(this)">
+    
+    <input type="text" id="email" placeholder="enter email">
+<input type="number" id="otp" placeholder="enter otp" hidden>
+
+
+
+
+    <script>
+        function change(eve){
+            document.getElementById("mymessage").innerText=eve.value;
+        }
+        let email=document.getElementById("email");
+        let otpinp=document.getElementById("otp");
+        //otpinp.style.display="none";//block show nhi hoga
+        email.addEventListener("change",function(){
+            let otp=112233;
+            let data =this.value;//email
+            if(data.includes('@')){
+            otpinp.style.display='block';//block show hoga yha
+            otpinp.addEventListener("change",function(){
+                if(this.value==otp){
+                    alert("OTP VERIFIED");
+                }
+                else{
+                     alert("INCORRECT OTP");
+                }
+            })
+
+            }
+        })
+    </script>
+    </body>
+</html>
